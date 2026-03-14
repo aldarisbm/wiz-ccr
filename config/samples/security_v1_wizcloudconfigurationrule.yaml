@@ -1,0 +1,9 @@
+apiVersion: security.joseberr.io/v1
+kind: WizCloudConfigurationRule
+metadata:
+  labels:
+    app.kubernetes.io/name: wizcloudconfigurationrule
+    app.kubernetes.io/managed-by: kustomize
+  name: wizcloudconfigurationrule-sample
+spec:
+  # TODO(user): Add fields here
