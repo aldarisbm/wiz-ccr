@@ -20,9 +20,6 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-// EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
-// NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
-
 type SeverityType int
 
 const (
@@ -31,6 +28,15 @@ const (
 	Medium
 	Low
 	Info
+)
+
+type OperationType int
+
+const (
+	Create OperationType = iota
+	Update
+	Delete
+	Connect
 )
 
 // WizCloudConfigurationRuleSpec defines the desired state of WizCloudConfigurationRule
@@ -42,10 +48,17 @@ type WizCloudConfigurationRuleSpec struct {
 
 	// foo is an example field of WizCloudConfigurationRule. Edit wizcloudconfigurationrule_types.go to remove/update
 	// +optional
-	RuleName        *string      `json:"foo,omitempty"`
-	Description     *string      `json:"description,omitempty"`
-	FindingSeverity SeverityType `json:"finding_severity,omitempty"`
-	ProjectScope    *string      `json:"project_scope,omitempty"`
+	RuleName            *string           `json:"foo,omitempty"`
+	Description         *string           `json:"description,omitempty"`
+	FindingSeverity     SeverityType      `json:"finding_severity,omitempty"`
+	ProjectScope        *string           `json:"project_scope,omitempty"`
+	FrameworkCategories []string          `json:"framework_categories,omitempty"`
+	Tags                map[string]string `json:"tags,omitempty"`
+	Matchers            *string           `json:"matchers,omitempty"`
+	TargetNativeType    *string           `json:"target_native_type,omitempty"`
+	Operation           OperationType     `json:"operation,omitempty"`
+	Code                *string           `json:"code,omitempty"`
+	RemediationSteps    *string           `json:"remediation_steps,omitempty"`
 }
 
 // WizCloudConfigurationRuleStatus defines the observed state of WizCloudConfigurationRule.
