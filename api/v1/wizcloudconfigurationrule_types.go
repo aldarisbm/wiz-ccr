@@ -20,23 +20,23 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-type SeverityType int
+type SeverityType string
 
 const (
-	Critical SeverityType = iota
-	High
-	Medium
-	Low
-	Info
+	Critical SeverityType = "Critical"
+	High     SeverityType = "High"
+	Medium   SeverityType = "Medium"
+	Low      SeverityType = "Low"
+	Info     SeverityType = "Info"
 )
 
-type OperationType int
+type OperationType string
 
 const (
-	Create OperationType = iota
-	Update
-	Delete
-	Connect
+	Create  OperationType = "Create"
+	Update  OperationType = "Update"
+	Delete  OperationType = "Delete"
+	Connect OperationType = "Connect"
 )
 
 // WizCloudConfigurationRuleSpec defines the desired state of WizCloudConfigurationRule
@@ -46,19 +46,19 @@ type WizCloudConfigurationRuleSpec struct {
 	// The following markers will use OpenAPI v3 schema to validate the value
 	// More info: https://book.kubebuilder.io/reference/markers/crd-validation.html
 
-	// foo is an example field of WizCloudConfigurationRule. Edit wizcloudconfigurationrule_types.go to remove/update
-	// +optional
-	RuleName            *string           `json:"foo,omitempty"`
-	Description         *string           `json:"description,omitempty"`
+	RuleName    *string `json:"rule-name"`
+	Description *string `json:"description,omitempty"`
+	// +kubebuilder:validation:Enum=Critical;High;Medium;Low;Info
 	FindingSeverity     SeverityType      `json:"finding_severity,omitempty"`
 	ProjectScope        *string           `json:"project_scope,omitempty"`
 	FrameworkCategories []string          `json:"framework_categories,omitempty"`
 	Tags                map[string]string `json:"tags,omitempty"`
-	Matchers            *string           `json:"matchers,omitempty"`
-	TargetNativeType    *string           `json:"target_native_type,omitempty"`
-	Operation           OperationType     `json:"operation,omitempty"`
-	Code                *string           `json:"code,omitempty"`
-	RemediationSteps    *string           `json:"remediation_steps,omitempty"`
+	Matchers            *string           `json:"matchers"`
+	TargetNativeType    *string           `json:"target_native_type"`
+	// +kubebuilder:validation:Enum=Create;Update;Delete;Connect
+	OperationTypes   []OperationType `json:"operation_types"`
+	Code             *string         `json:"code"`
+	RemediationSteps *string         `json:"remediation_steps,omitempty"`
 }
 
 // WizCloudConfigurationRuleStatus defines the observed state of WizCloudConfigurationRule.

@@ -10,18 +10,53 @@ A Kubernetes operator that introduces a `WizCloudConfigurationRule` Custom Resou
 
 **Planned expansion:** Additional Wiz Cloud Configuration Rule types beyond Admission Controller (e.g. scheduled, event-driven).
 
+### Spec Fields
+
+| Field | Required | Type | Description |
+|---|---|---|---|
+| `rule-name` | Yes | string | Display name of the rule |
+| `matchers` | Yes | string | Expression defining which resources this rule targets |
+| `target_native_type` | Yes | string | Kubernetes resource type to match (e.g. `Pod`, `Deployment`) |
+| `operation_types` | Yes | []string (enum) | Admission operations to intercept: `Create`, `Update`, `Delete`, `Connect` |
+| `code` | Yes | string | OPA/Rego policy code evaluated at admission time |
+| `description` | No | string | Human-readable description of what the rule checks |
+| `finding_severity` | No | string (enum) | Severity of findings: `Critical`, `High`, `Medium`, `Low`, `Info` |
+| `project_scope` | No | string | Wiz project this rule applies to |
+| `framework_categories` | No | []string | Compliance framework categories (e.g. `["CIS", "SOC2"]`) |
+| `tags` | No | map[string]string | Arbitrary key/value tags |
+| `remediation_steps` | No | string | Instructions for resolving a finding |
+
 ### Example Resource
 
 ```yaml
 apiVersion: security.joseberr.io/v1
 kind: WizCloudConfigurationRule
 metadata:
-  name: my-admission-rule
+  name: require-resource-limits
 spec:
-  ruleName: "Require resource limits"
+  rule-name: "Require resource limits"
   description: "Ensures all pods define CPU and memory limits"
-  findingSeverity: High
-  projectScope: "my-wiz-project"
+  finding_severity: High
+  project_scope: "my-wiz-project"
+  framework_categories:
+    - CIS
+    - SOC2
+  tags:
+    team: platform
+    env: production
+  target_native_type: "Pod"
+  operation_types:
+    - Create
+    - Update
+  matchers: "resource.kind == 'Pod'"
+  code: |
+    package main
+    deny[msg] {
+      container := input.request.object.spec.containers[_]
+      not container.resources.limits.cpu
+      msg := sprintf("Container '%v' must define CPU limits", [container.name])
+    }
+  remediation_steps: "Add resource limits to all containers in the pod spec."
 ```
 
 ## Getting Started
