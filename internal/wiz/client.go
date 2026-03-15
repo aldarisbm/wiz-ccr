@@ -91,10 +91,10 @@ type graphqlResponse[T any] struct {
 }
 
 type wizClient struct {
-	cfg       Config
-	http      *http.Client
-	token     string
-	tokenExp  time.Time
+	cfg      Config
+	http     *http.Client
+	token    string
+	tokenExp time.Time
 }
 
 // NewClient returns a Client backed by the Wiz GraphQL API.
@@ -128,7 +128,7 @@ func (c *wizClient) authenticate(ctx context.Context) error {
 	if err != nil {
 		return fmt.Errorf("fetching token: %w", err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	if resp.StatusCode != http.StatusOK {
 		body, _ := io.ReadAll(resp.Body)
@@ -167,7 +167,7 @@ func (c *wizClient) do(ctx context.Context, query string, variables map[string]a
 	if err != nil {
 		return fmt.Errorf("executing graphql request: %w", err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	if resp.StatusCode != http.StatusOK {
 		b, _ := io.ReadAll(resp.Body)

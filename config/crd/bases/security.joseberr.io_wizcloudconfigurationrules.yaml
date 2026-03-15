@@ -57,14 +57,22 @@ spec:
                   type: string
                 type: array
               matchers:
-                type: string
-              operation:
-                enum:
-                - Create
-                - Update
-                - Delete
-                - Connect
-                type: string
+                items:
+                  description: MatcherType identifies the kind of matcher used to
+                    evaluate the rule.
+                  enum:
+                  - ADMISSIONS_CONTROLLER
+                  type: string
+                type: array
+              operation_types:
+                items:
+                  enum:
+                  - Create
+                  - Update
+                  - Delete
+                  - Connect
+                  type: string
+                type: array
               project_scope:
                 type: string
               remediation_steps:
@@ -77,6 +85,12 @@ spec:
                 type: object
               target_native_type:
                 type: string
+            required:
+            - code
+            - matchers
+            - operation_types
+            - rule-name
+            - target_native_type
             type: object
           status:
             description: status defines the observed state of WizCloudConfigurationRule
@@ -150,6 +164,11 @@ spec:
                 x-kubernetes-list-map-keys:
                 - type
                 x-kubernetes-list-type: map
+              wizRuleID:
+                description: |-
+                  wizRuleID is the ID assigned by Wiz when the rule was created.
+                  It is used by the controller to update or delete the rule on subsequent reconciles.
+                type: string
             type: object
         required:
         - spec

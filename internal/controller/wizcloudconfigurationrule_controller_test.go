@@ -28,7 +28,25 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	securityv1 "github.com/aldarisbm/wiz-ccr/api/v1"
+	"github.com/aldarisbm/wiz-ccr/internal/wiz"
 )
+
+// fakeWizClient is a no-op Wiz client for use in tests.
+type fakeWizClient struct {
+	createdID string
+}
+
+func (f *fakeWizClient) CreateRule(_ context.Context, _ wiz.Rule) (string, error) {
+	return f.createdID, nil
+}
+
+func (f *fakeWizClient) UpdateRule(_ context.Context, _ string, _ wiz.Rule) error {
+	return nil
+}
+
+func (f *fakeWizClient) DeleteRule(_ context.Context, _ string) error {
+	return nil
+}
 
 var _ = Describe("WizCloudConfigurationRule Controller", func() {
 	Context("When reconciling a resource", func() {
@@ -38,9 +56,12 @@ var _ = Describe("WizCloudConfigurationRule Controller", func() {
 
 		typeNamespacedName := types.NamespacedName{
 			Name:      resourceName,
-			Namespace: "default", // TODO(user):Modify as needed
+			Namespace: "default",
 		}
 		wizcloudconfigurationrule := &securityv1.WizCloudConfigurationRule{}
+
+		ruleName := "Test rule"
+		code := "package main\ndeny[msg] { msg := \"denied\" }"
 
 		BeforeEach(func() {
 			By("creating the custom resource for the Kind WizCloudConfigurationRule")
@@ -51,14 +72,19 @@ var _ = Describe("WizCloudConfigurationRule Controller", func() {
 						Name:      resourceName,
 						Namespace: "default",
 					},
-					// TODO(user): Specify other spec details if needed.
+					Spec: securityv1.WizCloudConfigurationRuleSpec{
+						RuleName:         &ruleName,
+						TargetNativeType: strPtr("Pod"),
+						Matchers:         []securityv1.MatcherType{securityv1.MatcherTypeAdmissionsController},
+						OperationTypes:   []securityv1.OperationType{securityv1.Create},
+						Code:             &code,
+					},
 				}
 				Expect(k8sClient.Create(ctx, resource)).To(Succeed())
 			}
 		})
 
 		AfterEach(func() {
-			// TODO(user): Cleanup logic after each test, like removing the resource instance.
 			resource := &securityv1.WizCloudConfigurationRule{}
 			err := k8sClient.Get(ctx, typeNamespacedName, resource)
 			Expect(err).NotTo(HaveOccurred())
@@ -66,19 +92,31 @@ var _ = Describe("WizCloudConfigurationRule Controller", func() {
 			By("Cleanup the specific resource instance WizCloudConfigurationRule")
 			Expect(k8sClient.Delete(ctx, resource)).To(Succeed())
 		})
+
 		It("should successfully reconcile the resource", func() {
 			By("Reconciling the created resource")
 			controllerReconciler := &WizCloudConfigurationRuleReconciler{
-				Client: k8sClient,
-				Scheme: k8sClient.Scheme(),
+				Client:    k8sClient,
+				Scheme:    k8sClient.Scheme(),
+				WizClient: &fakeWizClient{createdID: "wiz-rule-123"},
 			}
 
 			_, err := controllerReconciler.Reconcile(ctx, reconcile.Request{
 				NamespacedName: typeNamespacedName,
 			})
 			Expect(err).NotTo(HaveOccurred())
-			// TODO(user): Add more specific assertions depending on your controller's reconciliation logic.
-			// Example: If you expect a certain status condition after reconciliation, verify it here.
+
+			By("Checking that the Wiz rule ID was stored in status")
+			updated := &securityv1.WizCloudConfigurationRule{}
+			Expect(k8sClient.Get(ctx, typeNamespacedName, updated)).To(Succeed())
+			Expect(updated.Status.WizRuleID).To(Equal("wiz-rule-123"))
+
+			By("Checking that the Available condition is set")
+			Expect(updated.Status.Conditions).To(ContainElement(
+				HaveField("Type", "Available"),
+			))
 		})
 	})
 })
+
+func strPtr(s string) *string { return &s }

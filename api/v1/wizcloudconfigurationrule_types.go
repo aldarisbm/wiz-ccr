@@ -20,6 +20,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
+// +kubebuilder:validation:Enum=Critical;High;Medium;Low;Info
 type SeverityType string
 
 const (
@@ -30,6 +31,7 @@ const (
 	Info     SeverityType = "Info"
 )
 
+// +kubebuilder:validation:Enum=Create;Update;Delete;Connect
 type OperationType string
 
 const (
@@ -40,6 +42,7 @@ const (
 )
 
 // MatcherType identifies the kind of matcher used to evaluate the rule.
+// +kubebuilder:validation:Enum=ADMISSIONS_CONTROLLER
 type MatcherType string
 
 const (
@@ -54,20 +57,17 @@ type WizCloudConfigurationRuleSpec struct {
 	// The following markers will use OpenAPI v3 schema to validate the value
 	// More info: https://book.kubebuilder.io/reference/markers/crd-validation.html
 
-	RuleName    *string `json:"rule-name"`
-	Description *string `json:"description,omitempty"`
-	// +kubebuilder:validation:Enum=Critical;High;Medium;Low;Info
+	RuleName            *string           `json:"rule-name"`
+	Description         *string           `json:"description,omitempty"`
 	FindingSeverity     SeverityType      `json:"finding_severity,omitempty"`
 	ProjectScope        *string           `json:"project_scope,omitempty"`
 	FrameworkCategories []string          `json:"framework_categories,omitempty"`
 	Tags                map[string]string `json:"tags,omitempty"`
 	TargetNativeType    *string           `json:"target_native_type"`
-	// +kubebuilder:validation:Enum=Create;Update;Delete;Connect
-	OperationTypes []OperationType `json:"operation_types"`
-	// +kubebuilder:validation:Enum=ADMISSIONS_CONTROLLER
-	Matchers         []MatcherType `json:"matchers"`
-	Code             *string       `json:"code"`
-	RemediationSteps *string       `json:"remediation_steps,omitempty"`
+	OperationTypes      []OperationType   `json:"operation_types"`
+	Matchers            []MatcherType     `json:"matchers"`
+	Code                *string           `json:"code"`
+	RemediationSteps    *string           `json:"remediation_steps,omitempty"`
 }
 
 // WizCloudConfigurationRuleStatus defines the observed state of WizCloudConfigurationRule.
