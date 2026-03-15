@@ -57,7 +57,7 @@ type WizCloudConfigurationRuleSpec struct {
 	// The following markers will use OpenAPI v3 schema to validate the value
 	// More info: https://book.kubebuilder.io/reference/markers/crd-validation.html
 
-	RuleName            *string           `json:"rule-name"`
+	RuleName            *string           `json:"rule_name"`
 	Description         *string           `json:"description,omitempty"`
 	FindingSeverity     SeverityType      `json:"finding_severity,omitempty"`
 	ProjectScope        *string           `json:"project_scope,omitempty"`

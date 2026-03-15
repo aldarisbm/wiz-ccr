@@ -77,7 +77,7 @@ spec:
                 type: string
               remediation_steps:
                 type: string
-              rule-name:
+              rule_name:
                 type: string
               tags:
                 additionalProperties:
@@ -89,7 +89,7 @@ spec:
             - code
             - matchers
             - operation_types
-            - rule-name
+            - rule_name
             - target_native_type
             type: object
           status:

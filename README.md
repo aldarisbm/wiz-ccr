@@ -14,7 +14,7 @@ A Kubernetes operator that introduces a `WizCloudConfigurationRule` Custom Resou
 
 | Field | Required | Type | Description |
 |---|---|---|---|
-| `rule-name` | Yes | string | Display name of the rule |
+| `rule_name` | Yes | string | Display name of the rule |
 | `matchers` | Yes | []string (enum) | Matcher types for the rule. Currently only `ADMISSIONS_CONTROLLER` is supported |
 | `target_native_type` | Yes | string | Kubernetes resource type to match (e.g. `Pod`, `Deployment`) |
 | `operation_types` | Yes | []string (enum) | Admission operations to intercept: `Create`, `Update`, `Delete`, `Connect` |
@@ -34,7 +34,7 @@ kind: WizCloudConfigurationRule
 metadata:
   name: require-resource-limits
 spec:
-  rule-name: "Require resource limits"
+  rule_name: "Require resource limits"
   description: "Ensures all pods define CPU and memory limits"
   finding_severity: High
   project_scope: "my-wiz-project"
