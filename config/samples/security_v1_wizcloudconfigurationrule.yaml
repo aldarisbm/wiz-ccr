@@ -6,4 +6,27 @@ metadata:
     app.kubernetes.io/managed-by: kustomize
   name: wizcloudconfigurationrule-sample
 spec:
-  # TODO(user): Add fields here
+  ruleName: "Require resource limits"
+  description: "Ensures all pods define CPU and memory limits"
+  findingSeverity: High
+  projectScope: "my-wiz-project"
+  frameworkCategories:
+    - CIS
+    - SOC2
+  tags:
+    team: platform
+    env: production
+  targetNativeType: "Pod"
+  matchers:
+    - ADMISSIONS_CONTROLLER
+  operationTypes:
+    - Create
+    - Update
+  code: |
+    package main
+    deny[msg] {
+      container := input.request.object.spec.containers[_]
+      not container.resources.limits.cpu
+      msg := sprintf("Container '%v' must define CPU limits", [container.name])
+    }
+  remediationSteps: "Add resource limits to all containers in the pod spec."

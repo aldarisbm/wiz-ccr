@@ -57,17 +57,17 @@ type WizCloudConfigurationRuleSpec struct {
 	// The following markers will use OpenAPI v3 schema to validate the value
 	// More info: https://book.kubebuilder.io/reference/markers/crd-validation.html
 
-	RuleName            *string           `json:"rule_name"`
+	RuleName            *string           `json:"ruleName"`
 	Description         *string           `json:"description,omitempty"`
-	FindingSeverity     SeverityType      `json:"finding_severity,omitempty"`
-	ProjectScope        *string           `json:"project_scope,omitempty"`
-	FrameworkCategories []string          `json:"framework_categories,omitempty"`
+	FindingSeverity     SeverityType      `json:"findingSeverity,omitempty"`
+	ProjectScope        *string           `json:"projectScope,omitempty"`
+	FrameworkCategories []string          `json:"frameworkCategories,omitempty"`
 	Tags                map[string]string `json:"tags,omitempty"`
-	TargetNativeType    *string           `json:"target_native_type"`
-	OperationTypes      []OperationType   `json:"operation_types"`
+	TargetNativeType    *string           `json:"targetNativeType"`
+	OperationTypes      []OperationType   `json:"operationTypes"`
 	Matchers            []MatcherType     `json:"matchers"`
 	Code                *string           `json:"code"`
-	RemediationSteps    *string           `json:"remediation_steps,omitempty"`
+	RemediationSteps    *string           `json:"remediationSteps,omitempty"`
 }
 
 // WizCloudConfigurationRuleStatus defines the observed state of WizCloudConfigurationRule.

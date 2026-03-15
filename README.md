@@ -14,17 +14,17 @@ A Kubernetes operator that introduces a `WizCloudConfigurationRule` Custom Resou
 
 | Field | Required | Type | Description |
 |---|---|---|---|
-| `rule_name` | Yes | string | Display name of the rule |
+| `ruleName` | Yes | string | Display name of the rule |
 | `matchers` | Yes | []string (enum) | Matcher types for the rule. Currently only `ADMISSIONS_CONTROLLER` is supported |
-| `target_native_type` | Yes | string | Kubernetes resource type to match (e.g. `Pod`, `Deployment`) |
-| `operation_types` | Yes | []string (enum) | Admission operations to intercept: `Create`, `Update`, `Delete`, `Connect` |
+| `targetNativeType` | Yes | string | Kubernetes resource type to match (e.g. `Pod`, `Deployment`) |
+| `operationTypes` | Yes | []string (enum) | Admission operations to intercept: `Create`, `Update`, `Delete`, `Connect` |
 | `code` | Yes | string | OPA/Rego policy code evaluated at admission time |
 | `description` | No | string | Human-readable description of what the rule checks |
-| `finding_severity` | No | string (enum) | Severity of findings: `Critical`, `High`, `Medium`, `Low`, `Info` |
-| `project_scope` | No | string | Wiz project this rule applies to |
-| `framework_categories` | No | []string | Compliance framework categories (e.g. `["CIS", "SOC2"]`) |
+| `findingSeverity` | No | string (enum) | Severity of findings: `Critical`, `High`, `Medium`, `Low`, `Info` |
+| `projectScope` | No | string | Wiz project this rule applies to |
+| `frameworkCategories` | No | []string | Compliance framework categories (e.g. `["CIS", "SOC2"]`) |
 | `tags` | No | map[string]string | Arbitrary key/value tags |
-| `remediation_steps` | No | string | Instructions for resolving a finding |
+| `remediationSteps` | No | string | Instructions for resolving a finding |
 
 ### Example Resource
 
@@ -34,20 +34,20 @@ kind: WizCloudConfigurationRule
 metadata:
   name: require-resource-limits
 spec:
-  rule_name: "Require resource limits"
+  ruleName: "Require resource limits"
   description: "Ensures all pods define CPU and memory limits"
-  finding_severity: High
-  project_scope: "my-wiz-project"
-  framework_categories:
+  findingSeverity: High
+  projectScope: "my-wiz-project"
+  frameworkCategories:
     - CIS
     - SOC2
   tags:
     team: platform
     env: production
-  target_native_type: "Pod"
+  targetNativeType: "Pod"
   matchers:
     - ADMISSIONS_CONTROLLER
-  operation_types:
+  operationTypes:
     - Create
     - Update
   code: |
@@ -57,7 +57,7 @@ spec:
       not container.resources.limits.cpu
       msg := sprintf("Container '%v' must define CPU limits", [container.name])
     }
-  remediation_steps: "Add resource limits to all containers in the pod spec."
+  remediationSteps: "Add resource limits to all containers in the pod spec."
 ```
 
 ## Getting Started

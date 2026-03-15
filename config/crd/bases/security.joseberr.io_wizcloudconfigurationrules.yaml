@@ -44,7 +44,7 @@ spec:
                 type: string
               description:
                 type: string
-              finding_severity:
+              findingSeverity:
                 enum:
                 - Critical
                 - High
@@ -52,7 +52,7 @@ spec:
                 - Low
                 - Info
                 type: string
-              framework_categories:
+              frameworkCategories:
                 items:
                   type: string
                 type: array
@@ -64,7 +64,7 @@ spec:
                   - ADMISSIONS_CONTROLLER
                   type: string
                 type: array
-              operation_types:
+              operationTypes:
                 items:
                   enum:
                   - Create
@@ -73,24 +73,24 @@ spec:
                   - Connect
                   type: string
                 type: array
-              project_scope:
+              projectScope:
                 type: string
-              remediation_steps:
+              remediationSteps:
                 type: string
-              rule_name:
+              ruleName:
                 type: string
               tags:
                 additionalProperties:
                   type: string
                 type: object
-              target_native_type:
+              targetNativeType:
                 type: string
             required:
             - code
             - matchers
-            - operation_types
-            - rule_name
-            - target_native_type
+            - operationTypes
+            - ruleName
+            - targetNativeType
             type: object
           status:
             description: status defines the observed state of WizCloudConfigurationRule
