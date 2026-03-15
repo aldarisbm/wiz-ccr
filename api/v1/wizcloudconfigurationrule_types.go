@@ -39,6 +39,14 @@ const (
 	Connect OperationType = "Connect"
 )
 
+// MatcherType identifies the kind of matcher used to evaluate the rule.
+type MatcherType string
+
+const (
+	// MatcherTypeAdmissionsController evaluates resources at Kubernetes admission time.
+	MatcherTypeAdmissionsController MatcherType = "ADMISSIONS_CONTROLLER"
+)
+
 // WizCloudConfigurationRuleSpec defines the desired state of WizCloudConfigurationRule
 type WizCloudConfigurationRuleSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
@@ -53,21 +61,21 @@ type WizCloudConfigurationRuleSpec struct {
 	ProjectScope        *string           `json:"project_scope,omitempty"`
 	FrameworkCategories []string          `json:"framework_categories,omitempty"`
 	Tags                map[string]string `json:"tags,omitempty"`
-	Matchers            *string           `json:"matchers"`
 	TargetNativeType    *string           `json:"target_native_type"`
 	// +kubebuilder:validation:Enum=Create;Update;Delete;Connect
-	OperationTypes   []OperationType `json:"operation_types"`
-	Code             *string         `json:"code"`
-	RemediationSteps *string         `json:"remediation_steps,omitempty"`
+	OperationTypes []OperationType `json:"operation_types"`
+	// +kubebuilder:validation:Enum=ADMISSIONS_CONTROLLER
+	Matchers         []MatcherType `json:"matchers"`
+	Code             *string       `json:"code"`
+	RemediationSteps *string       `json:"remediation_steps,omitempty"`
 }
 
 // WizCloudConfigurationRuleStatus defines the observed state of WizCloudConfigurationRule.
 type WizCloudConfigurationRuleStatus struct {
-	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
-
-	// For Kubernetes API conventions, see:
-	// https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md#typical-status-properties
+	// wizRuleID is the ID assigned by Wiz when the rule was created.
+	// It is used by the controller to update or delete the rule on subsequent reconciles.
+	// +optional
+	WizRuleID string `json:"wizRuleID,omitempty"`
 
 	// conditions represent the current state of the WizCloudConfigurationRule resource.
 	// Each condition has a unique type and reflects the status of a specific aspect of the resource.

@@ -37,6 +37,7 @@ import (
 
 	securityv1 "github.com/aldarisbm/wiz-ccr/api/v1"
 	"github.com/aldarisbm/wiz-ccr/internal/controller"
+	"github.com/aldarisbm/wiz-ccr/internal/wiz"
 	// +kubebuilder:scaffold:imports
 )
 
@@ -178,9 +179,17 @@ func main() {
 		os.Exit(1)
 	}
 
+	wizClient := wiz.NewClient(wiz.Config{
+		ClientID:      os.Getenv("WIZ_CLIENT_ID"),
+		ClientSecret:  os.Getenv("WIZ_CLIENT_SECRET"),
+		TokenEndpoint: os.Getenv("WIZ_TOKEN_ENDPOINT"),
+		APIEndpoint:   os.Getenv("WIZ_API_ENDPOINT"),
+	})
+
 	if err := (&controller.WizCloudConfigurationRuleReconciler{
-		Client: mgr.GetClient(),
-		Scheme: mgr.GetScheme(),
+		Client:    mgr.GetClient(),
+		Scheme:    mgr.GetScheme(),
+		WizClient: wizClient,
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "Failed to create controller", "controller", "WizCloudConfigurationRule")
 		os.Exit(1)

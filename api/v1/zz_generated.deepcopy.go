@@ -114,15 +114,20 @@ func (in *WizCloudConfigurationRuleSpec) DeepCopyInto(out *WizCloudConfiguration
 			(*out)[key] = val
 		}
 	}
-	if in.Matchers != nil {
-		in, out := &in.Matchers, &out.Matchers
-		*out = new(string)
-		**out = **in
-	}
 	if in.TargetNativeType != nil {
 		in, out := &in.TargetNativeType, &out.TargetNativeType
 		*out = new(string)
 		**out = **in
+	}
+	if in.OperationTypes != nil {
+		in, out := &in.OperationTypes, &out.OperationTypes
+		*out = make([]OperationType, len(*in))
+		copy(*out, *in)
+	}
+	if in.Matchers != nil {
+		in, out := &in.Matchers, &out.Matchers
+		*out = make([]MatcherType, len(*in))
+		copy(*out, *in)
 	}
 	if in.Code != nil {
 		in, out := &in.Code, &out.Code

@@ -15,7 +15,7 @@ A Kubernetes operator that introduces a `WizCloudConfigurationRule` Custom Resou
 | Field | Required | Type | Description |
 |---|---|---|---|
 | `rule-name` | Yes | string | Display name of the rule |
-| `matchers` | Yes | string | Expression defining which resources this rule targets |
+| `matchers` | Yes | []string (enum) | Matcher types for the rule. Currently only `ADMISSIONS_CONTROLLER` is supported |
 | `target_native_type` | Yes | string | Kubernetes resource type to match (e.g. `Pod`, `Deployment`) |
 | `operation_types` | Yes | []string (enum) | Admission operations to intercept: `Create`, `Update`, `Delete`, `Connect` |
 | `code` | Yes | string | OPA/Rego policy code evaluated at admission time |
@@ -45,10 +45,11 @@ spec:
     team: platform
     env: production
   target_native_type: "Pod"
+  matchers:
+    - ADMISSIONS_CONTROLLER
   operation_types:
     - Create
     - Update
-  matchers: "resource.kind == 'Pod'"
   code: |
     package main
     deny[msg] {
